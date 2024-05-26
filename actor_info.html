@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Actor Information</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #333;
+            color: #ddd;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            color: #ddd;
+        }
+        .table th {
+            background-color: #444;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #555;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #666;
+        }
+        a {
+            color: #61dafb;
+        }
+        a:hover {
+            color: #21a1f1;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn btn-secondary back-button">Back to Search</a>
+        <h1 class="my-4">Actor Information</h1>
+        <div>
+            <h2>{{ actor.name.value }}</h2>
+            <p>Gender: {{ actor.gender.value }}</p>
+            <h3>Movies</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Movie Title</th>
+                        <th scope="col">Character</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in actor.moviesWithCharacters.value.split("||") %}
+                        {% set movie_title, rest = entry.split(" (", 1) %}
+                        {% set movie_id, character = rest.split("):", 1) %}
+                        <tr>
+                            <td><a href="{{ url_for('movie_info', id=movie_id) }}">{{ movie_title }}</a></td>
+                            <td>{{ character }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

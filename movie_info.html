@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ movie.title.value }} - Movie Information</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #333;
+            color: #ddd;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .movie-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .table th, .table td {
+            color: #ddd;
+        }
+        .table th {
+            background-color: #444;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #555;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #666;
+        }
+        a {
+            color: #61dafb;
+        }
+        a:hover {
+            color: #21a1f1;
+        }
+        .crew-section {
+            margin-top: 20px;
+        }
+        .crew-section h3 {
+            margin-bottom: 10px;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn btn-secondary back-button">Back to Search</a>
+        <h1 class="movie-title">{{ movie.title.value }}</h1>
+        <p><strong>Release Date:</strong> {{ movie.releaseDate.value }}</p>
+        <p><strong>Duration:</strong> {{ movie.duration.value.replace('.0', '') }} min</p>
+        <p><strong>Rating:</strong> {{ movie.rating.value }}</p>
+        <p><strong>Genres:</strong> {{ movie.genres.value }}</p>
+        <p><strong>Studio:</strong> 
+            {% for studio in movie.studios.value.split("||") %}
+            {% set s_name, s_id = studio.split("::") %}
+            <a href="{{ url_for('studio_info', id=s_id) }}">{{ s_name }}</a>
+            {{", "}}
+        {% endfor %}
+        </p>
+        <h2>Cast</h2>
+        <ul>
+            {% for actor in movie.cast.value.split("||") %}
+                {% set actor_name, actor_id = actor.split("::") %}
+                <li><a href="{{ url_for('actor_info', id=actor_id) }}">{{ actor_name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% if movie.directors.value %}
+            <div class="crew-section">
+                <h3>Directors</h3>
+                <p>
+                    {% for director in movie.directors.value.split("||") %}
+                    {% if director %}
+                    {% set director_name, director_id = director.split("::") %}
+                    <a href="{{ url_for('crew_info', id=director_id) }}">{{ director_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        {% if movie.producers.value %}
+            <div class="crew-section">
+                <h3>Producers</h3>
+                <p>
+                    {% for producer in movie.producers.value.split("||") %}
+                    {% if producer %}
+                    {% set producer_name, producer_id = producer.split("::") %}
+                    <a href="{{ url_for('crew_info', id=producer_id) }}">{{ producer_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        {% if movie.screenplays.value %}
+            <div class="crew-section">
+                <h3>Screenplay</h3>
+                <p>
+                    {% for screenplay in movie.screenplays.value.split("||") %}
+                    {% if screenplay %}
+                    {% set screenplay_name, screenplay_id = screenplay.split("::") %}
+                    <a href="{{ url_for('crew_info', id=screenplay_id) }}">{{ screenplay_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        {% if movie.editors.value or movie.writers.value %}
+            <div class="crew-section">
+                <h3>Editors</h3>
+                <p>
+                    {% for editor in movie.editors.value.split("||") %}
+                    {% if editor %}
+                    {% set editor_name, editor_id = editor.split("::") %}
+                    <a href="{{ url_for('crew_info', id=editor_id) }}">{{ editor_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        {% if movie.writers.value %}
+            <div class="crew-section">
+                <h3>Writers</h3>
+                <p>
+                    {% for writer in movie.writers.value.split("||") %}
+                    {% if writer %}
+                    {% set writer_name, writer_id = writer.split("::") %}
+                    <a href="{{ url_for('crew_info', id=writer_id) }}">{{ writer_name }}</a>{% if not loop.last %}, {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% endif %}
+        <p><strong>Keywords:</strong> {{ movie.keywords.value }}</p>
+    </div>
+</body>
+</html>

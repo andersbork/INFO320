@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Search Engine</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #333;
+            color: #ddd;
+        }
+        .container {
+            max-width: 2000px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .slider {
+            width: 100%;
+        }
+        .genre-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dropdown-menu label {
+            display: block;
+            padding: 0.25rem 1.5rem;
+            clear: both;
+            font-weight: 400;
+            color: #ddd;
+            white-space: nowrap;
+        }
+        .dropdown-menu input {
+            margin-right: 10px;
+        }
+        .table th, .table td {
+            color: #ddd;
+        }
+        .table th {
+            background-color: #444;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #555;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #666;
+        }
+        a    {
+            color: #61dafb;
+        }
+        a:hover {
+            color: #21a1f1;
+        }
+    
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .form-group {
+            flex: 1 1 150px;
+            margin: 5px 0;
+        }
+        .col-md-4 .form-row .col {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Search Engine</h1>
+        <form action="/query" method="post">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <label for="search">Search:</label>
+                    <input type="text" class="form-control" id="search" name="search" placeholder="Search for movie or actor">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="genres">Genres:</label>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="genreDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Genres
+                        </button>
+                        <div class="dropdown-menu genre-list" aria-labelledby="genreDropdown">
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Thriller"> Thriller</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Fantasy"> Fantasy</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Foreign"> Foreign</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Documentary"> Documentary</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="TV Movie"> TV Movie</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Science Fiction"> Science Fiction</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Animation"> Animation</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Western"> Western</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="War"> War</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Comedy"> Comedy</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Mystery"> Mystery</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Music"> Music</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Romance"> Romance</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Horror"> Horror</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Crime"> Crime</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Family"> Family</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Adventure"> Adventure</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Drama"> Drama</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="History"> History</label>
+                            <label class="dropdown-item"><input type="checkbox" name="genres" value="Action"> Action</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="rating">Minimum Rating:</label>
+                    <input id="rating" name="rating" data-slider-id='ratingSlider' type="text" data-slider-min="0" data-slider-max="10" data-slider-step="0.1" data-slider-value="0"/>
+                    <span id="ratingValue">0</span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="release_year">Release Year:</label>
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="number" class="form-control" id="min_year" name="min_year" placeholder="Min">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" id="max_year" name="max_year" placeholder="Max">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+            
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#rating').slider({
+                formatter: function(value) {
+                    $('#ratingValue').text(value);
+                    return 'Current value: ' + value;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

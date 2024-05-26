@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        th.sortable:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        body {
+            background-color: #333;
+            color: #ddd;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            color: #ddd;
+        }
+        .table th {
+            background-color: #444;
+        }
+        .table tbody tr:nth-child(odd) {
+            background-color: #555;
+        }
+        .table tbody tr:nth-child(even) {
+            background-color: #666;
+        }
+        a {
+            color: #61dafb;
+        }
+        a:hover {
+            color: #21a1f1;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function sortTable(column) {
+            const form = document.getElementById('sortForm');
+            const sortByInput = document.getElementById('sort_by');
+            const sortOrderInput = document.getElementById('sort_order');
+
+            if (sortByInput.value === column) {
+                sortOrderInput.value = sortOrderInput.value === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortByInput.value = column;
+                sortOrderInput.value = 'asc';
+            }
+
+            form.submit();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn btn-secondary back-button">Back to Search</a>
+        <h1 class="my-4">Search Results</h1>
+        <form id="sortForm" method="post" action="/query">
+            <input type="hidden" name="sort_by" id="sort_by" value="{{ sort_by }}">
+            <input type="hidden" name="sort_order" id="sort_order" value="{{ sort_order }}">
+            <input type="hidden" name="search" value="{{ request.form['search'] }}">
+            {% for genre in request.form.getlist('genres') %}
+            <input type="hidden" name="genres" value="{{ genre }}">
+            {% endfor %}
+            <input type="hidden" name="rating" value="{{ request.form['rating'] }}">
+            <input type="hidden" name="min_year" value="{{ request.form['min_year'] }}">
+            <input type="hidden" name="max_year" value="{{ request.form['max_year'] }}">
+        </form>
+        <table id="resultsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Movie Title</th>
+                    <th scope="col">Release Date</th>
+                    <th scope="col">Genre</th>
+                    <th scope="col" class="sortable" onclick="sortTable('rating')">Rating</th>
+                    <th scope="col">Actor</th>
+                    <th scope="col">Studio</th>
+                    <th scope="col" class="sortable" onclick="sortTable('duration')">Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                <tr>
+                    <td><a href="{{ url_for('movie_info', id=result.movie.value) }}">{{ result.title.value }}</a></td>
+                    <td>{{ result.rd.value }}</td>
+                    <td>{{ result.genres.value }}</td>
+                    <td>{{ result.rating.value }}</td>
+                    <td>
+                        {% for actor, actor_id in zip(result.actorNames.value.split(", "), result.actorIDs.value.split(", ")) %}
+                        <a href="{{ url_for('actor_info', id=actor_id) }}">{{ actor }}</a>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for studio, studioID in zip(result.studioNames.value.split(", "), result.studioIDs.value.split(", ")) %}
+                        <a href="{{ url_for('studio_info', id=studioID) }}">{{ studio }}</a>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ result.duration.value.replace('.0', '') }} min</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
